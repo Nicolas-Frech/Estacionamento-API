@@ -29,14 +29,22 @@ public class ParkingService {
     }
 
     public ParkingDTOReturn updateParking(ParkingDTOUpdate dto) {
-        Parking parking = parkingRepository.getReferenceById(dto.id());
-        parking.update(dto);
+        if (!parkingRepository.existsById(dto.id())) {
+            throw new RuntimeException("Não existe estacionamento com esse ID!");
+        } else {
+            Parking parking = parkingRepository.getReferenceById(dto.id());
+            parking.update(dto);
 
-        return new ParkingDTOReturn(parking);
+            return new ParkingDTOReturn(parking);
+        }
     }
 
     public void deleteParking(Long id) {
-        Parking parking = parkingRepository.getReferenceById(id);
-        parking.delete();
+        if (!parkingRepository.existsById(id)) {
+            throw new RuntimeException("Não existe estacionamento com esse ID!");
+        } else {
+            Parking parking = parkingRepository.getReferenceById(id);
+            parking.delete();
+        }
     }
 }
