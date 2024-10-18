@@ -1,5 +1,6 @@
 package br.com.nicolas_frech.garagem_API.model.vehicle;
 
+import br.com.nicolas_frech.garagem_API.model.parking.Parking;
 import br.com.nicolas_frech.garagem_API.model.vehicle.dto.VehicleDTO;
 import br.com.nicolas_frech.garagem_API.model.vehicle.dto.VehicleDTOUpdate;
 import jakarta.persistence.*;
@@ -33,6 +34,10 @@ public class Vehicle {
 
     private boolean active;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "parking_id")
+    private Parking parking;
+
     public Vehicle(VehicleDTO dto) {
         this.brand = dto.brand();
         this.model = dto.model();
@@ -62,5 +67,13 @@ public class Vehicle {
         if(dto.type() != null) {
             this.type = dto.type();
         }
+    }
+
+    public void addParking(Parking parking) {
+        this.parking = parking;
+    }
+
+    public void removeParking() {
+        this.parking = null;
     }
 }

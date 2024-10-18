@@ -2,6 +2,7 @@ package br.com.nicolas_frech.garagem_API.controller;
 
 import br.com.nicolas_frech.garagem_API.model.parking.dto.ParkingDTO;
 import br.com.nicolas_frech.garagem_API.model.parking.dto.ParkingDTOUpdate;
+import br.com.nicolas_frech.garagem_API.model.vehicle.dto.VehicleEntryDTO;
 import br.com.nicolas_frech.garagem_API.service.ParkingService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,4 +48,19 @@ public class ParkingController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/entradaVeiculo")
+    @Transactional
+    public ResponseEntity entryVehicle(@RequestBody @Valid VehicleEntryDTO dto) {
+        parkingService.entryVehicle(dto);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/saidaVeiculo")
+    @Transactional
+    public ResponseEntity exitVehicle(@RequestBody @Valid VehicleEntryDTO dto) {
+        parkingService.exitVehicle(dto);
+
+        return ResponseEntity.ok().build();
+    }
 }

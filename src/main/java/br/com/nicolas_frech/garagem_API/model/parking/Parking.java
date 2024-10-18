@@ -2,13 +2,15 @@ package br.com.nicolas_frech.garagem_API.model.parking;
 
 import br.com.nicolas_frech.garagem_API.model.address.Address;
 import br.com.nicolas_frech.garagem_API.model.parking.dto.ParkingDTO;
-import br.com.nicolas_frech.garagem_API.model.parking.dto.ParkingDTOReturn;
 import br.com.nicolas_frech.garagem_API.model.parking.dto.ParkingDTOUpdate;
+import br.com.nicolas_frech.garagem_API.model.vehicle.Vehicle;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Table(name = "parkings")
@@ -36,6 +38,9 @@ public class Parking {
     private String carSpace;
 
     private Boolean active;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parking", cascade = CascadeType.ALL)
+    private List<Vehicle> vehicles;
 
     public Parking(ParkingDTO dto) {
         this.active = true;
@@ -70,5 +75,17 @@ public class Parking {
 
     public void delete() {
         this.active = false;
+    }
+
+    public void addVehicle(Vehicle vehicle) {
+        this.vehicles.add(vehicle);
+    }
+
+    public void removeVehicle(Vehicle vehicle) {
+        if(this.vehicles.contains(vehicle)) {
+            this.vehicles.remove(vehicle);
+        } else {
+            throw new IllegalArgumentException("Esse veículo não está nesse estacionamento");
+        }
     }
 }
