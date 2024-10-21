@@ -5,13 +5,12 @@ import br.com.nicolas_frech.garagem_API.model.parking.dto.ParkingDTO;
 import br.com.nicolas_frech.garagem_API.model.parking.dto.ParkingDTOReturn;
 import br.com.nicolas_frech.garagem_API.model.parking.dto.ParkingDTOUpdate;
 import br.com.nicolas_frech.garagem_API.model.vehicle.Vehicle;
+import br.com.nicolas_frech.garagem_API.model.vehicle.VehicleType;
 import br.com.nicolas_frech.garagem_API.model.vehicle.dto.VehicleEntryDTO;
 import br.com.nicolas_frech.garagem_API.repository.ParkingRepository;
 import br.com.nicolas_frech.garagem_API.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ParkingService {
@@ -67,15 +66,27 @@ public class ParkingService {
             Parking parking = parkingRepository.getReferenceById(dto.parkingId());
             Vehicle vehicle = vehicleRepository.getReferenceById(dto.vehicleId());
 
-            var parkingSpace = parking.getVehicles().size();
-            var bikeSpace = Integer.parseInt(parking.getBikeSpace());
-            var carSpace = Integer.valueOf(parking.getCarSpace());
+            if(vehicle.getType() == VehicleType.CAR) {
+                var carParkingSpace = vehicleRepository.findByVehicleType(VehicleType.CAR, parking);
+                var carSpace = Integer.parseInt(parking.getCarSpace());
 
-            if(parkingSpace == bikeSpace + carSpace) {
-                throw new RuntimeException("Esse estacionamento está lotado!!!");
-            } else {
-                parking.addVehicle(vehicle);
-                vehicle.addParking(parking);
+                if(carParkingSpace.size() == carSpace) {
+                    throw new RuntimeException("Esse estacionamento chegou a sua lotação máxima de carros!!!");
+                } else {
+                    parking.addVehicle(vehicle);
+                    vehicle.addParking(parking);
+                }
+            }
+            else {
+                var bikeParkingSpace = vehicleRepository.findByVehicleType(VehicleType.BIKE, parking);
+                var bikeSpace = Integer.parseInt(parking.getBikeSpace());
+
+                if(bikeParkingSpace.size() == bikeSpace) {
+                    throw new RuntimeException("Esse estacionamento chegou a sua lotação máxima de motos!!!");
+                } else {
+                    parking.addVehicle(vehicle);
+                    vehicle.addParking(parking);
+                }
             }
         }
     }
