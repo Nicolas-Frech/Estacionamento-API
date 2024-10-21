@@ -20,31 +20,19 @@ public class VehicleService {
     }
 
     public VehicleDTOReturn getVehicleById(Long id) {
-        if(!vehicleRepository.existsById(id)) {
-            throw new RuntimeException("Não existe veículo registrado com esse ID!");
-        } else {
-            Vehicle vehicle = vehicleRepository.getReferenceById(id);
-            return new VehicleDTOReturn(vehicle);
-        }
+        Vehicle vehicle = vehicleRepository.getReferenceById(id);
+        return new VehicleDTOReturn(vehicle);
     }
 
     public VehicleDTOReturn updateVehicle(VehicleDTOUpdate dto) {
-        if(!vehicleRepository.existsById(dto.id())) {
-            throw new RuntimeException("Não existe veículo registrado com esse ID!");
-        } else {
-            Vehicle vehicle = vehicleRepository.getReferenceById(dto.id());
-            vehicle.update(dto);
+        Vehicle vehicle = vehicleRepository.getReferenceById(dto.id());
+        vehicle.update(dto);
 
-            return new VehicleDTOReturn(vehicle);
-        }
+        return new VehicleDTOReturn(vehicle);
     }
 
     public void deleteVehicle(Long id) {
-        if(!vehicleRepository.existsById(id)) {
-            throw new RuntimeException("Não existe veículo registrado com esse ID!");
-        } else {
-            Vehicle vehicle = vehicleRepository.getReferenceById(id);
-            vehicle.delete();
-        }
+        Vehicle vehicle = vehicleRepository.getReferenceById(id);
+        vehicle.delete();
     }
 }
